@@ -78,6 +78,12 @@ export class Clusters extends React.Component<Props & DispatchProps, any> {
     }
   }
 
+  goProxy(cluster) {
+    document.cookie = cluster.name + "=" + cluster.token
+    let url = "http://" + window.location.hostname + ":9999/" + cluster.name + "/";
+    window.open(url, "_blank");
+  }
+
   openYarnClusterModal() {
     this.setState({
       yarnClusterModalOpen: true
@@ -133,8 +139,13 @@ export class Clusters extends React.Component<Props & DispatchProps, any> {
             return (
               <Panel key={i}>
                 <header>
-                  <span><i className="fa fa-cubes mar-bot-20"/> <a href={'http://' + cluster.address} target="_blank"
+                  <span><i className="fa fa-cubes mar-bot-20"/> <a href={'http://' + cluster.address + '/' + cluster.name + '/'} target="_blank"
                                                         rel="noopener" className="charcoal-grey semibold">{cluster.name}</a> -- {cluster.status.total_cpu_count} nodes</span>
+                  <span className="remove-cluster">
+                    <button className="remove-cluster-button test" onClick={this.goProxy.bind(this, cluster)}>
+                      <i className="fa fa-arrow-circle-o-right no-margin"/>
+                    </button>
+                  </span>
                   <span className="remove-cluster">
                     {_.get(this.props.config, 'kerberos_enabled', false) === true ? <input ref="keytabFilename" type="text" placeholder="Keytab filename"/> : null}
 
